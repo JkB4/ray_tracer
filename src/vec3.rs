@@ -1,7 +1,7 @@
 use std::{fmt, ops};
 use std::fmt::Display;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct Vec3 {
     e: [f32;3],
 }
@@ -34,29 +34,43 @@ impl Vec3 {
     }
 
     pub fn length(&self) -> f32 {
-        (self.e[0] + self.e[0] + self.e[1] + self.e[1] + self.e[2] + self.e[2]).sqrt()
+        (self.e[0] * self.e[0] + self.e[1] * self.e[1] + self.e[2] * self.e[2]).sqrt()
     }
 
     pub fn length_squared(&self) -> f32 {
-        self.e[0] + self.e[0] + self.e[1] + self.e[1] + self.e[2] + self.e[2]
+        self.e[0] * self.e[0] + self.e[1] * self.e[1] + self.e[2] * self.e[2]
     }
 
 
-    // Etter impl div
-    //pub fn normalize(&self) -> Vec3 {
-    //    self
-    //}
+    pub fn normalize(&v: &Vec3) -> Vec3 {
+        v / v.length()
+    }
+
+    pub fn dot(&u: &Vec3, &v: &Vec3) -> f32 {
+        u.e[0] * v.e[0] + u.e[1] * v.e[1] + u.e[2] * v.e[2]
+    }
+
+    pub fn cross(&u: &Vec3, &v: &Vec3) -> Vec3 {
+        Vec3 {
+            e: [
+                u.e[1] * v.e[2] - u.e[2] * v.e[1],
+                u.e[2] * v.e[0] - u.e[0] * v.e[2],
+                u.e[0] * v.e[1] - u.e[1] * v.e[0],
+            ]
+        }
+    }
+
 }
 
 impl ops::Add for Vec3 {
     type Output = Self;
 
-    fn add(self, v: Vec3) -> Vec3 {
+    fn add(self, rhs: Vec3) -> Self::Output {
         Vec3 {
             e: [
-                self.e[0] + v.e[0],
-                self.e[1] + v.e[1],
-                self.e[2] + v.e[2],
+                self.e[0] + rhs.e[0],
+                self.e[1] + rhs.e[1],
+                self.e[2] + rhs.e[2],
             ]
         }
     }
@@ -65,12 +79,120 @@ impl ops::Add for Vec3 {
 impl ops::Add<f32> for Vec3 {
     type Output = Self;
 
-    fn add(self, f: f32) -> Vec3 {
+    fn add(self, rhs: f32) -> Self::Output {
         Vec3 {
             e: [
-                self.e[0] + f,
-                self.e[1] + f,
-                self.e[2] + f,
+                self.e[0] + rhs,
+                self.e[1] + rhs,
+                self.e[2] + rhs,
+            ]
+        }
+    }
+}
+
+impl ops::Add<Vec3> for f32 {
+    type Output = Vec3;
+
+    fn add(self, rhs: Vec3) -> Self::Output {
+        Vec3 {
+            e: [
+                 self + rhs.e[0],
+                 self + rhs.e[1],
+                 self + rhs.e[2],
+            ]
+        }
+    }
+}
+
+impl ops::Neg for Vec3 {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        Vec3 {
+            e: [-self.e[0], -self.e[1], -self.e[2]],
+        }
+}
+}
+
+impl ops::Sub for Vec3 {
+    type Output = Self;
+
+    fn sub(self, rhs: Vec3) -> Self::Output {
+        Vec3 {
+            e: [
+                self.e[0] - rhs.e[0],
+                self.e[1] - rhs.e[1],
+                self.e[2] - rhs.e[2],
+            ]
+        }
+    }
+}
+
+impl ops::Sub<f32> for Vec3 {
+    type Output = Self;
+
+    fn sub(self, rhs: f32) -> Self::Output {
+        Vec3 {
+            e: [
+                self.e[0] - rhs,
+                self.e[1] - rhs,
+                self.e[2] - rhs,
+            ]
+        }
+    }
+}
+
+impl ops::Mul for Vec3 {
+    type Output = Self;
+
+    fn mul(self, rhs: Vec3) -> Self::Output {
+        Vec3 {
+            e: [
+                self.e[0] * rhs.e[0],
+                self.e[1] * rhs.e[1],
+                self.e[2] * rhs.e[2],
+            ]
+        }
+    }
+}
+
+impl ops::Mul<f32> for Vec3 {
+    type Output = Self;
+
+    fn mul(self, rhs: f32) -> Self::Output {
+        Vec3 {
+            e: [
+                self.e[0] * rhs,
+                self.e[1] * rhs,
+                self.e[2] * rhs,
+            ]
+        }
+    }
+}
+
+impl ops::Mul<Vec3> for f32 {
+    type Output = Vec3;
+
+    fn mul(self, rhs: Vec3) -> Self::Output {
+        Vec3 {
+            e: [
+                self * rhs.e[0],
+                self * rhs.e[1],
+                self * rhs.e[2],
+            ]
+        }
+    }
+}
+
+impl ops::Div<f32> for Vec3 {
+    type Output = Self;
+
+    fn div(self, rhs: f32) -> Self::Output {
+        Vec3 {
+            e: [
+                self.e[0] / rhs,
+                self.e[1] / rhs,
+                self.e[2] / rhs,
             ]
         }
     }
