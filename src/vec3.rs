@@ -41,6 +41,10 @@ impl Vec3 {
         self.e[0] * self.e[0] + self.e[1] * self.e[1] + self.e[2] * self.e[2]
     }
 
+    pub fn direction(&self) -> f32 {
+        let n: Vec3 = self.normalize();
+        
+    }
 
     pub fn normalize(&v: &Vec3) -> Vec3 {
         v / v.length()
